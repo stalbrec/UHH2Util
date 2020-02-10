@@ -5,15 +5,39 @@ def handle_command(command,debug=False):
     if not debug:
         os.system(command)
 
-INdir='/nfs/dust/cms/user/albrechs/SingleJetTrees/WMassPreSel/'
+
+macroDir='/afs/desy.de/user/a/albrechs/xxl/af-cms/UHH2/10_2/CMSSW_10_2_10/src/UHH2/JetMass/macros'
+
+INdir='/nfs/dust/cms/user/albrechs/UHH2/JetMassOutput/WMass/'
 OUTdir='/afs/desy.de/user/a/albrechs/xxl/af-cms/UHH2/10_2/CMSSW_10_2_10/src/UHH2/JetMass/Histograms/W/'
+
+#2016
+# SIGNALS={
+#   'WMatched':'uhh2.AnalysisModuleRunner.MC.MC_WJetsToQQ_WMatched_2016v3.root'
+# }
+# BACKGROUNDS={
+#   'QCD':'uhh2.AnalysisModuleRunner.MC.MC_QCD_HT*',
+#   'WUnmatched':'uhh2.AnalysisModuleRunner.MC.MC_WJetsToQQ_WUnmatched_2016v3.root'
+# }
+# DATA={
+#     'Data':'uhh2.AnalysisModuleRunner.DATA.DATA_JetHTRun2016v3*'
+# }
+
+#2017
 SIGNALS={
-  'WMatched':'uhh2.AnalysisModuleRunner.MC.MC_WJetsToQQ_WMatched_2016v3.root'
+  'WMatched':'uhh2.AnalysisModuleRunner.MC.MC_WJetsToQQ_*_WMatched_2017v2.root'
 }
+
+
 BACKGROUNDS={
-  'QCD':'uhh2.AnalysisModuleRunner.MC.MC_QCD_HT*',
-  'WUnmatched':'uhh2.AnalysisModuleRunner.MC.MC_WJetsToQQ_WUnmatched_2016v3.root'
+  'QCD':'uhh2.AnalysisModuleRunner.MC.MC_QCD_Pt*',
+  'WUnmatched':'uhh2.AnalysisModuleRunner.MC.MC_WJetsToQQ_*_WUnmatched_2017v2.root'
 }
+DATA={
+    'Data':'uhh2.AnalysisModuleRunner.DATA.DATA_JetHTRun2017v2*'
+}
+
+
 ALL_MC=SIGNALS.copy()
 ALL_MC.update(BACKGROUNDS)
 
@@ -30,8 +54,6 @@ for sampleName in ALL_MC.keys():
     pseudoData_command+=' %s.root'%(OUTdir+sampleName)
 handle_command(pseudoData_command)
 
-#add all Backgrounds for ddt TH3D Histograms
-h3_command='hadd -f -T %s/N2_v_mSD_v_pT.root'%OUTdir
-for bgName in BACKGROUNDS.keys():
-    h3_command+=' %s.root'%(OUTdir+bgName)
-handle_command(h3_command)
+#merge Data Samples
+for sampleName,name in DATA.items():
+    handle_command('hadd -f -T %s.root %s'%(OUTdir+sampleName,INdir+name))
