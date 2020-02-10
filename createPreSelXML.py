@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os,glob,sys
+for i,p in enumerate(sys.path):
+    if('sframebatch' in p.lower()):
+        sys.path.pop(i)
 sys.path.append('/afs/desy.de/user/a/albrechs/xxl/af-cms/UHH2/10_2/CMSSW_10_2_10/src/UHH2/scripts/crab')
 from readaMCatNloEntries import *
 
