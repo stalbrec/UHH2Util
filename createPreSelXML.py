@@ -1,16 +1,24 @@
 #!/usr/bin/env python
 from __future__ import print_function
 import os,glob,sys
+
+#make sure script does not use deprecated version of readaMCatNloEntries.py from sframe_batch
 for i,p in enumerate(sys.path):
     if('sframebatch' in p.lower()):
         sys.path.pop(i)
-sys.path.append('/afs/desy.de/user/a/albrechs/xxl/af-cms/UHH2/10_2/CMSSW_10_2_10/src/UHH2/scripts/crab')
+
+#instead add crab script path to python path in order to use its version of readaMCatNloEntries.py
+sys.path.append(os.environ['CMSSW_BASE']+'/src/UHH2/scripts/crab')
 from readaMCatNloEntries import *
 
 snippet='<In FileName="%s" Lumi="0.0"/>\n'
-if(len(sys.argv)<2):
-    exit(0)
-inXML_path=os.path.abspath(sys.argv[1])
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("inputXML",type=str, help="inputXML which will be parsed for possible root outputfiles")
+args = parser.parse_args()
+
+inXML_path=os.path.abspath(args.inputXML)
 OutDir=inXML_path.replace(inXML_path.split('/')[-1],'PreSel/')
 if(not os.path.exists(OutDir)):
     os.mkdir(OutDir)
