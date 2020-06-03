@@ -26,6 +26,7 @@ inXML=open(inXML_path,'r+')
 root_dir = ''
 workdir = ''
 datasets=[]
+root_dir_var=None
 for l in inXML:
     if('ENTITY' in l and 'OUTdir' in l):
         root_dir_var = l.split('"')[1]
