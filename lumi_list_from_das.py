@@ -21,9 +21,9 @@ def get_lumi_lists(inputDataset="/QCD_Pt_300to470_TuneCP5_13TeV_pythia8/RunIIFal
                 if(i>n_files):
                     break
                 lumi_list += LumiList.LumiList(runsAndLumis={'1':file_info['lumi'][0]['number']})
-            except:
-                print('Did not find lumis for %s'%dataset)
-            result.update({dataset:lumi_list})    
+        except:
+            print('Did not find lumis for %s'%dataset)
+        result.update({dataset:lumi_list})    
     return result
 
 def get_ntuple_info(branch,year,name):
@@ -100,7 +100,10 @@ if(__name__=="__main__"):
                 if(ntuple_info is None):
                     print("Did not find entry in spreadsheet for",name,'. Skipping it')
                     continue
-                lumi_lists = get_lumi_lists(ntuple_info["das"])
+                das_string = ntuple_info["das"]
+                if(das_string[0] != "/"):
+                    das_string = "/"+das_string
+                lumi_lists = get_lumi_lists(das_string)
                 for das,ll in lumi_lists.items():
                     file_name = name + ("_ext" if (len(lumi_lists.keys())>1 and "_ext" in das) else "")+'.json'
                     ll.writeJSON(fileName=outdir+file_name)
